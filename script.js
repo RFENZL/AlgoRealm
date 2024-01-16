@@ -1,6 +1,6 @@
 document.getElementById('start-button').addEventListener('click', function() {
     // Commence le jeu ou redirige vers la page du jeu
-    window.location.href = 'game.html'; // Remplacez avec l'URL de votre jeu
+    window.location.href = 'level1.html'; // Remplacez avec l'URL de votre jeu
 });
 
 document.getElementById('options-button').addEventListener('click', function() {
