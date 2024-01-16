@@ -5,7 +5,7 @@ body, html {
 }
 
 #menu-container {
-    background-image: url('Images/cave.jpg');
+    background-image: url('Images/Menu/main_bg_cave.jpg');
     background-size: cover;
     background-position: center;
     height: 100vh;
