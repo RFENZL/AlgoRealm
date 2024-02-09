@@ -5,14 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2af0081f-0b85-4b74-bf17-0baa99c5a983" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend/js/global.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/css/map.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/css/map.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/game.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/game.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/js/setting.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/js/setting.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/js/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/js/ui.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/option.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/option.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/js/map.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/js/map.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,6 +29,9 @@
   &quot;associatedIndex&quot;: 4
 }</component>
   <component name="ProjectId" id="2c7zfsQ5ZJ2pIiH7Tyq2yqB8M8u" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -42,7 +41,7 @@
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "add__global__head",
+    "git-widget-placeholder": "develop",
     "last_opened_file_path": "E:/Xampp/htdocs/Try/projet_dev_algorealm/frontend/assets",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -77,7 +76,7 @@
       <updated>1707477511002</updated>
       <workItem from="1707477512074" duration="8962000" />
       <workItem from="1707486706129" duration="363000" />
-      <workItem from="1707487090281" duration="2898000" />
+      <workItem from="1707487090281" duration="3982000" />
     </task>
     <servers />
   </component>
