@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>ALGOREALM - Options</title>
+    <link rel="icon" type="image/png" href="../frontend/assets/gemme_logo.png">
+    <link rel="stylesheet" href="../frontend/css/main.css">
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Accueil</a></li>
+        </ul>
+    </nav>
+</header>
+<div id="options-container">
+    <h2 class="sub_title">Options</h2>
+    <div class="bindings">
+        <div class="binding">
+            <label for="up-key">Déplacement vers le haut:</label>
+            <input type="text" id="up-key" class="key-input" maxlength="1">
+            <button class="reset-button" data-key="up">Reset</button>
+        </div>
+        <div class="binding">
+            <label for="down-key">Déplacement vers le bas:</label>
+            <input type="text" id="down-key" class="key-input" maxlength="1">
+            <button class="reset-button" data-key="down">Reset</button>
+        </div>
+        <div class="binding">
+            <label for="left-key">Déplacement vers la gauche:</label>
+            <input type="text" id="left-key" class="key-input" maxlength="1">
+            <button class="reset-button" data-key="left">Reset</button>
+        </div>
+        <div class="binding">
+            <label for="right-key">Déplacement vers la droite:</label>
+            <input type="text" id="right-key" class="key-input" maxlength="1">
+            <button class="reset-button" data-key="right">Reset</button>
+        </div>
+    </div>
+    <div class="button-container">
+        <button id="save-button">Sauvegarder</button>
+        <button id="back-button">Retour</button>
+    </div>
+</div>
+<script src="../frontend/js/setting.js"></script>
+</body>
+</html>
