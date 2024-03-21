@@ -1,0 +1,111 @@
+body{
+    background-image: url('/frontend/assets/Parchemin.png');
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: 50%; 
+    background-repeat: no-repeat;
+    background-position: 50% 15%;
+}
+.titre{
+    position: absolute;
+    left: 45vw;
+    top: 5vh;
+}
+h1{
+    text-align: center;
+    margin-top: 0%;
+}
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.popup-content {
+    position: absolute;
+    width: 30vw;
+    height: 80vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: transparent;
+    background-image: url('/frontend/assets/Parchemin.png');
+    background-size: 30vw 80vh;
+    /* padding: 20px; */
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 30px;
+    cursor: pointer;
+    width: 2vw;
+    height:4.5vh;
+    font-size: 35px;
+    background-image: url('/frontend/assets/brush_stroke_circles_with_delete_crosses-removebg-preview.png');
+    background-size: 2vw 4.5vh;
+}
+
+.aide{
+    background-image: url('/frontend/assets/Piece.png');
+    background-size: 100%; 
+    width: 3vw;
+    height: 7vh;
+    background-repeat: no-repeat;
+    position: absolute;
+    left: 30vw;
+    top: 5vh;
+}
+.enigme_body{
+    margin-top: 10vh;
+}
+
+p{width: 40vw;}
+.console{
+    width: 30vw;
+    height:25vh;
+    background-color: rgb(12, 12, 12);
+    color:white
+}
+.execEnigme{
+    background-image: url('/frontend/assets/game_buttons-removebg-preview.png');
+    background-size: 4vw 9vh;
+    height: 9vh;
+    width: 4vw;
+}
+#Console{
+    font-size: 150%;
+    margin: 2%;
+}
+.terminal{
+    text-align: center;
+}
+#id{
+    text-align: center;
+    width: 30vw;
+    height:25vh;
+    border: 4mm ridge rgba(211, 220, 50, 1.0);
+    background-color: rgb(12, 12, 12);
+    color:white
+}
+textarea{
+    width: 30vw;
+    height: 25vh;
+    resize: none;
+    line-height: 1.5;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-shadow: 1px 1px 1px #999;
+    background-color: black;
+    color:white;
+}
