@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="/frontend/css/Enigme.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="Enigme">
+            <div class="aide" id="aide">
+        </div>
+        <div class="popup" id="popup">
+            <div class="popup-content">
+                <span class="close" onclick="closePopup()"></span>
+                <p style="display: flex;align-items: center;justify-content: center;width: 30vw;height: 75vh;">Contenu de votre popup</p>
+            </div>
+        </div>
+        <h1><div class="titre">Exercice</div></h1>
+        <div class="enigme_body">
+        <div class="intitulé">
+            
+            <p>Bienvenue, <br> développeur en herbe ! Pour ouvrir cette porte, tu devras compléter le morceau de code avec les fonctionnalités nécessaires.
+                Ton objectif est de calculer la somme des nombres pairs de 1 à 10.
+                </p>Instructions :
+                <p STYLE="padding:0 0 0 20px;">- Utiliser une boucle pour parcourir les nombres de 1 à 10.<br>
+                 - Une condition pour vérifier si le nombre est pair.<br>
+                 - Si le nombre est pair, ajoutez-le à la somme.<br></p>
+                Bonne chance, et que le code soit avec toi !
+        </div>
+        <div class="réponse"></div>
+        <div class="terminal">
+           <textarea name="terminal" id="terminal" cols="30" rows="10">
+           </textarea>
+        </div> <div style="display:flex;justify-content: center;">
+            <div class="execEnigme" onclick="testEnigme()"></div>
+        </div>
+        <div style="display:flex;justify-content: center;">
+        <div class="console">
+            <div id="Console">Console:</div>
+            
+        </div></div>
+    </div>
+</div>
+        <script src="/frontend/js/enigme.js"></script>
+    </body>
+</html>
