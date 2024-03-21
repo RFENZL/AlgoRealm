@@ -1,0 +1,42 @@
+/* START NAVBAR */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    background-color: transparent;
+    text-align: center;
+}
+
+.navbar-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+}
+
+.navbar-item {
+    display: inline;
+    margin-right: 10px;
+}
+
+.navbar-link {
+    color: #ff0000;
+    text-decoration: none;
+    font-size: 2.2em; /* Augmente la taille du texte */
+}
+
+.navbar-link:hover {
+    color: #ff0000;
+    text-decoration: underline;
+    font-weight: bold; /* Rend le texte plus gras lors du survol */
+}
+
+/* END NAVBAR */
