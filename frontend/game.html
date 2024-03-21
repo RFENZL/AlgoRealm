@@ -1,116 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
+    <script src="../frontend/js/global.js"></script> <!-- add this line to all the pages that need to use the global.js file (for head) -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Top-down Tile Map with Background Images</title>
-    <style>
-        body {
-            background-image: url('assets/roche.png');
-            margin: 0;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        canvas {
-            display: block;
-            border: 1px solid black;
-        }
-    </style>
+    <link rel="stylesheet" href="../frontend/css/map.css">
 </head>
 <body>
-<canvas id="topDownMapCanvas" width="100vw" height="100vh"></canvas>
-
-<script>
-    const canvas = document.getElementById('topDownMapCanvas');
-    const context = canvas.getContext('2d');
-
-    const tileSize = 64;
-    const rows = 30;
-    const cols = 26;
-
-    canvas.width = 1664;
-    canvas.height = 768;
-
-    const backgroundImageUrl = 'assets/grass.png';
-    const backgroundImageUrl2 = 'assets/roche.png';
-
-    const backgroundImage = new Image();
-    backgroundImage.src = backgroundImageUrl;
-
-    const backgroundImage2 = new Image();
-    backgroundImage2.src = backgroundImageUrl2;
-
-    function drawTopDownTile(x, y, displayBackgroundImage2) {
-        const topDownX = x * tileSize;
-        const topDownY = y * tileSize;
-
-        context.drawImage(backgroundImage, topDownX, topDownY, tileSize, tileSize);
-
-        if (displayBackgroundImage2) {
-            context.drawImage(backgroundImage2, topDownX, topDownY, tileSize, tileSize);
-        }
-
-        context.strokeStyle = '#000';
-        context.lineWidth = 1;
-        context.strokeRect(topDownX, topDownY, tileSize, tileSize);
-    }
-
-    function isValidPosition(row, col, map) {
-        const positionsToCheck = [
-            { x: -1, y: -1 },
-            { x: 0, y: -1 },
-            { x: 1, y: -1 },
-            { x: -1, y: 0 },
-            { x: 1, y: 0 },
-            { x: -1, y: 1 },
-            { x: 0, y: 1 },
-            { x: 1, y: 1 }
-        ];
-
-        for (const offset of positionsToCheck) {
-            const newRow = row + offset.y;
-            const newCol = col + offset.x;
-
-            if (
-                newRow >= 0 && newRow < rows &&
-                newCol >= 0 && newCol < cols &&
-                map[newRow][newCol]
-            ) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    function drawRandomTopDownTileMap() {
-        let map = Array.from({ length: rows }, () => Array(cols).fill(false));
-        let backgroundImage2Count = 0;
-
-        for (let row = 0; row < rows; row++) {
-            for (let col = 0; col < cols; col++) {
-                const displayBackgroundImage2 = Math.random() < 0.2 && backgroundImage2Count < 2;
-
-                if (displayBackgroundImage2 && isValidPosition(row, col, map)) {
-                    backgroundImage2Count++;
-                    map[row][col] = true;
-                } else {
-                    backgroundImage2Count = 0;
-                    map[row][col] = false;
-                }
-
-                drawTopDownTile(col, row, displayBackgroundImage2);
-            }
-        }
-    }
-    Promise.all([backgroundImage, backgroundImage2].map(img => new Promise(resolve => img.onload = resolve)))
-        .then(() => {
-            drawRandomTopDownTileMap();
-        });
-</script>
+    <canvas id="topDownMapCanvas" width="100vw" height="100vh"></canvas>
 </body>
+<script src="../frontend/js/map.js"></script>
 </html>
