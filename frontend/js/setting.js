@@ -48,7 +48,7 @@ function initSaveButton() {
             right: rightKey
         }));
 
-        alert('Touches sauvegardées avec succès!');
+        showConfirmation();
     });
 }
 
@@ -60,4 +60,31 @@ function displaySavedKeys() {
         document.getElementById('left-key').value = savedKeys.left;
         document.getElementById('right-key').value = savedKeys.right;
     }
+}
+
+function showConfirmation() {
+    // Créer un nouvel élément div
+    const confirmation = document.createElement('div');
+
+    // Ajouter du texte à l'élément div
+    confirmation.textContent = 'Paramètres enregistrés avec succès !';
+
+    // Ajouter des styles à l'élément div
+    confirmation.style.position = 'fixed';
+    confirmation.style.top = '50%';
+    confirmation.style.left = '50%';
+    confirmation.style.transform = 'translate(-50%, -50%)';
+    confirmation.style.padding = '30px';
+    confirmation.style.backgroundColor = 'green';
+    confirmation.style.color = 'white';
+    confirmation.style.textAlign = 'center';
+    confirmation.style.borderRadius = '30px';
+
+    // Ajouter l'élément div au body
+    document.body.appendChild(confirmation);
+
+    // Supprimer l'élément div après 3 secondes
+    setTimeout(() => {
+        document.body.removeChild(confirmation);
+    }, 3000);
 }

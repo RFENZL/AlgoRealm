@@ -24,15 +24,18 @@ function init() {
 init();
 
 function movePlayer(event) {
-    const speed = 5;
+    const speed = 50;
     let newX = player.x;
     let newY = player.y;
 
-    switch (event.key) {
-        case "ArrowUp": newY -= speed; break;
-        case "ArrowDown": newY += speed; break;
-        case "ArrowLeft": newX -= speed; break;
-        case "ArrowRight": newX += speed; break;
+    // Récupérer les touches personnalisées du localStorage
+    const customKeys = JSON.parse(localStorage.getItem('customKeys'));
+
+    switch (event.key.toUpperCase()) {
+        case customKeys.up: newY -= speed; break;
+        case customKeys.down: newY += speed; break;
+        case customKeys.left: newX -= speed; break;
+        case customKeys.right: newX += speed; break;
     }
 
     if (newX >= 0 && newX + player.width <= canvas.width) {
