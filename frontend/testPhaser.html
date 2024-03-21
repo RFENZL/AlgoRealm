@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu Phaser avec inventaire</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        canvas {
+            display: block;
+        }
+        #inventory {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            color: black;
+        }
+        #inventoryButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            background-color: #3498db;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="gameContainer"></div>
+<button id="inventoryButton">Inventaire</button>
+
+<script>
+    let game = new Phaser.Game({
+        type: Phaser.AUTO,
+        width: 1000,
+        height: 600,
+        parent: 'gameContainer',
+        scene: {
+            preload: preload,
+            create: create
+        },
+        backgroundColor: '#ffffff'
+    });
+
+    let inventory = [];
+    let inventoryText;
+    let scene;
+
+    function preload() {
+        scene = this;
+        scene.load.image('épée1', 'assets/épées/épée1.png');
+        scene.load.image('épée2', 'assets/épées/épée2.png');
+    }
+
+    function create() {
+        let object = scene.add.sprite(100, 100, 'épée1').setInteractive();
+        let object2 = scene.add.sprite(200, 200, 'épée2').setInteractive();
+        
+        object.setScale(0.5);
+        object2.setScale(0.2);
+        
+        let inventoryButton = document.getElementById('inventoryButton');
+        inventoryButton.addEventListener('click', function() {
+            // Enregistrer l'inventaire dans le stockage local du navigateur
+            localStorage.setItem('inventory', JSON.stringify(inventory));
+            // Rediriger vers la page de l'inventaire
+            window.location.href = 'inventaire.html';
+        });
+        
+        inventoryText = scene.add.text(10, 10, "Inventaire : ", { font: "20px Arial", fill: "#000000" });
+        
+        object.on('pointerdown', function() {
+            collectObject('épée1');
+        });
+        object2.on('pointerdown', function() {
+            collectObject('épée2');
+        });
+
+        // Récupérer les données d'inventaire du stockage local s'il y en a
+        let storedInventory = localStorage.getItem('inventory');
+        if (storedInventory) {
+            inventory = JSON.parse(storedInventory);
+            updateInventoryText();
+        }
+    }
+
+    function collectObject(object) {
+        inventory.push(object);
+        updateInventoryText();
+        // Enregistrer l'inventaire dans le stockage local du navigateur
+        localStorage.setItem('inventory', JSON.stringify(inventory));
+        scene.children.first.destroy();
+    }
+
+    function updateInventoryText() {
+        let text = "Inventaire : ";
+        for(let i = 0; i < inventory.length; i++) {
+            text += inventory[i] + ", ";
+        }
+        inventoryText.text = text;
+    }
+</script>
+
+</body>
+</html>

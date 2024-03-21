@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventaire</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        #inventory {
+            width: 300px;
+            padding: 20px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .item {
+            display: flex;
+            align-items: center;
+        }
+        .item img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="inventory">
+    <h1>Inventaire</h1>
+    <ul id="inventoryList"></ul>
+</div>
+
+<script>
+    // Récupérer les données de l'inventaire depuis le stockage local du navigateur
+    let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+
+    // Sélection de la liste d'inventaire dans le DOM
+    let inventoryList = document.getElementById('inventoryList');
+
+    // Parcourir le tableau d'inventaire et afficher chaque élément
+    inventory.forEach(item => {
+        let li = document.createElement('li');
+        let itemElement = document.createElement('div');
+        itemElement.classList.add('item');
+        let img = document.createElement('img');
+        img.src = 'assets/épées/' + item + '.png'; // Assurez-vous que les images sont correctement nommées
+        let itemName = document.createElement('span');
+        itemName.textContent = item;
+        itemElement.appendChild(img);
+        itemElement.appendChild(itemName);
+        li.appendChild(itemElement);
+        inventoryList.appendChild(li);
+    });
+</script>
+
+</body>
+</html>
