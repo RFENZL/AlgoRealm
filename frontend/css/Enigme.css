@@ -52,7 +52,7 @@ h1{
     width: 2vw;
     height:4.5vh;
     font-size: 35px;
-    background-image: url('/frontend/assets/brush_stroke_circles_with_delete_crosses-removebg-preview.png');
+    background-image: url('/frontend/assets/main_menu/brush_stroke_circles_with_delete_crosses-removebg-preview.png');
     background-size: 2vw 4.5vh;
 }
 
@@ -78,7 +78,7 @@ p{width: 40vw;}
     color:white
 }
 .execEnigme{
-    background-image: url('/frontend/assets/game_buttons-removebg-preview.png');
+    background-image: url('/frontend/assets/main_menu/game_buttons-removebg-preview.png');
     background-size: 4vw 9vh;
     height: 9vh;
     width: 4vw;

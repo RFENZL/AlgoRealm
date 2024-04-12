@@ -12,7 +12,7 @@ body, html {
 }
 
 #menu-container {
-    background-image: url('../assets/main_bg_cave.jpg');
+    background-image: url('../assets/main_menu/main_bg_cave.jpg');
     background-size: cover;
     background-position: center;
     height: 100vh;
@@ -68,7 +68,7 @@ button:active {
 
 /* Options Container */
 #options-container {
-    background-image: url('../assets/main_bg_cave.jpg');
+    background-image: url('../assets/main_menu/main_bg_cave.jpg');
     background-size: cover;
     background-position: center;
     display: flex;
