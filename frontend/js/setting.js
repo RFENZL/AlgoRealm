@@ -28,7 +28,7 @@ function keyBinding() {
     keyInputs.forEach(input => {
         input.addEventListener('keydown', function(event) {
             event.preventDefault();
-            this.value = event.key.toUpperCase();
+            this.value = event.key.toLowerCase();
         });
     });
 }

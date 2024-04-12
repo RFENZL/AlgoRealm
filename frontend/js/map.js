@@ -5,7 +5,7 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 200 }
+            debug: true
         }
     },
     scene: {
@@ -17,6 +17,10 @@ var config = {
 
 var game = new Phaser.Game(config);
 var character;
+var test;
+const speed = 200;
+var customKeys = {up: '', down: '', left: '', right: ''};
+customKeys = JSON.parse(localStorage.getItem('customKeys'));
 
 function preload ()
 {
@@ -30,15 +34,20 @@ function preload ()
 
     // Chargez l'image du personnage
     this.load.image('character', 'assets/main_menu/gemme_logo.png');
+    this.load.image('test', 'assets/main_menu/gemme_logo.png');
 
     this.load.on('complete', () => {
         // Créez un personnage à partir de la classe Character
-        character = new Character(this, 400, 300, 'character');
+        character = new Character(this, 100, 100, 'character');
+        test = new Enemie(this, 600, 300, 'test');
+        console.log(customKeys);
     });
 }
 
+
 function create ()
 {
+    /**
     // Create the map from the Tiled JSON file
     var map = this.make.tilemap({ key: 'map' });
 
@@ -61,23 +70,34 @@ function create ()
     this.physics.add.collider(character.sprite, solLayer);
     this.physics.add.collider(character.sprite, arbresLayer);
     this.physics.add.collider(character.sprite, housesLayer);
+    */
 }
+ 
 
 function update ()
 {
+    this.physics.add.collider(character.sprite, test.sprite, collisionHandler);
     character.stop();
 
-    if (this.input.keyboard.checkDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT), 1)) {
-        character.moveLeft(200);
+    if ((customKeys['left'] && this.input.keyboard.checkDown(this.input.keyboard.addKey(customKeys['left']), 1)) 
+         || this.input.keyboard.checkDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT), 1)) {
+        character.moveLeft(speed);
     }
-    else if (this.input.keyboard.checkDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT), 1)) {
-        character.moveRight(200);
+    else if ((customKeys['right'] && this.input.keyboard.checkDown(this.input.keyboard.addKey(customKeys['right']), 1)) 
+    || this.input.keyboard.checkDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT), 1)) {
+        character.moveRight(speed);
     }
 
-    if (this.input.keyboard.checkDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP), 1)) {
-        character.moveUp(200);
+    if ((customKeys['up'] && this.input.keyboard.checkDown(this.input.keyboard.addKey(customKeys['up']), 1)) 
+         || this.input.keyboard.checkDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP), 1)) {
+        character.moveUp(speed);
     }
-    else if (this.input.keyboard.checkDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN), 1)) {
-        character.moveDown(200);
+    else if ((customKeys['down'] && this.input.keyboard.checkDown(this.input.keyboard.addKey(customKeys['down']), 1)) 
+             || this.input.keyboard.checkDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN), 1)) {
+        character.moveDown(speed);
     }
+}
+
+function collisionHandler (character, test) {
+    console.log('collision');
 }

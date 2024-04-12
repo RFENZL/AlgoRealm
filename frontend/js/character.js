@@ -1,7 +1,7 @@
 class Character {
     constructor(scene, x, y, key) {
         this.scene = scene;
-        this.sprite = this.scene.physics.add.sprite(x, y, key);
+        this.sprite = this.scene.physics.add.sprite(x, y, key).setScale(0.5);
 
         // Empêcher le personnage de sortir des limites du monde du jeu
         this.sprite.setCollideWorldBounds(true);
