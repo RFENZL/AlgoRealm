@@ -1,88 +1,83 @@
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-
-// Définir le joueur
-const player = {
-    x: 100, // Position X de départ
-    y: 100, // Position Y de départ
-    width: 50, // Largeur
-    height: 50, // Hauteur
-    color: 'blue' // Couleur
+var config = {
+    type: Phaser.AUTO,
+    width: window.innerWidth,
+    height: window.innerHeight,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 200 }
+        }
+    },
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    }
 };
 
-// Fonction pour dessiner le joueur
-function drawPlayer() {
-    ctx.fillStyle = player.color;
-    ctx.fillRect(player.x, player.y, player.width, player.height);
+var game = new Phaser.Game(config);
+var character;
+
+function preload ()
+{
+    // Chargez le fichier JSON de la carte Tiled
+    this.load.tilemapTiledJSON('map', 'assets/maps_json/map.json');
+
+    // Chargez les images de la carte
+    this.load.image('sol', 'assets/sol.png');
+    this.load.image('arbres', 'assets/arbres.png');
+    this.load.image('houses', 'assets/houses.png');
+
+    // Chargez l'image du personnage
+    this.load.image('character', 'assets/main_menu/gemme_logo.png');
+
+    this.load.on('complete', () => {
+        // Créez un personnage à partir de la classe Character
+        character = new Character(this, 400, 300, 'character');
+    });
 }
 
-// Initialiser le jeu
-function init() {
-    drawPlayer();
+function create ()
+{
+    // Create the map from the Tiled JSON file
+    var map = this.make.tilemap({ key: 'map' });
+
+    // Add the tileset images
+    var solTiles = map.addTilesetImage('sol');
+    var arbresTiles = map.addTilesetImage('arbres');
+    var housesTiles = map.addTilesetImage('houses');
+
+    // Create the map layers
+    var solLayer = map.createLayer('sol', solTiles);
+    var arbresLayer = map.createLayer('arbres', arbresTiles);
+    var housesLayer = map.createLayer('houses', housesTiles);
+
+    // Set the collisions for the map layers
+    solLayer.setCollisionByProperty({ collides: true });
+    arbresLayer.setCollisionByProperty({ collides: true });
+    housesLayer.setCollisionByProperty({ collides: true });
+
+    // Add the collision between the character and the map layers
+    this.physics.add.collider(character.sprite, solLayer);
+    this.physics.add.collider(character.sprite, arbresLayer);
+    this.physics.add.collider(character.sprite, housesLayer);
 }
 
-init();
+function update ()
+{
+    character.stop();
 
-function movePlayer(event) {
-    const speed = 50;
-    let newX = player.x;
-    let newY = player.y;
-
-    // Récupérer les touches personnalisées du localStorage
-    const customKeys = JSON.parse(localStorage.getItem('customKeys'));
-
-    switch (event.key.toUpperCase()) {
-        case customKeys.up: newY -= speed; break;
-        case customKeys.down: newY += speed; break;
-        case customKeys.left: newX -= speed; break;
-        case customKeys.right: newX += speed; break;
+    if (this.input.keyboard.checkDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT), 1)) {
+        character.moveLeft(200);
+    }
+    else if (this.input.keyboard.checkDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT), 1)) {
+        character.moveRight(200);
     }
 
-    if (newX >= 0 && newX + player.width <= canvas.width) {
-        player.x = newX;
+    if (this.input.keyboard.checkDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP), 1)) {
+        character.moveUp(200);
     }
-    if (newY >= 0 && newY + player.height <= canvas.height) {
-        player.y = newY;
+    else if (this.input.keyboard.checkDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN), 1)) {
+        character.moveDown(200);
     }
-
-    updateGame();
-}
-
-function updateGame() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Efface le canevas
-    drawPlayer(); // Redessine le joueur à la nouvelle position
-}
-
-document.addEventListener('keydown', movePlayer);
-
-// Supposons qu'il y a une porte à ces coordonnées
-const door = {
-    x: 400,
-    y: 300,
-    width: 50,
-    height: 100,
-    color: 'brown'
-};
-
-function drawDoor() {
-    ctx.fillStyle = door.color;
-    ctx.fillRect(door.x, door.y, door.width, door.height);
-}
-
-function checkCollision() {
-    if (player.x < door.x + door.width &&
-        player.x + player.width > door.x &&
-        player.y < door.y + door.height &&
-        player.y + player.height > door.y) {
-        // Collision détectée, afficher l'énigme
-        alert("Vous avez trouvé une porte verrouillée. Résolvez l'énigme pour continuer.");
-    }
-}
-
-// Ajouter drawDoor() et checkCollision() à la fonction updateGame()
-function updateGame() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawPlayer();
-    drawDoor();
-    checkCollision();
 }
