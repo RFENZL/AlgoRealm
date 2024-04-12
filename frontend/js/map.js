@@ -1,5 +1,6 @@
 var playerPiece;
 var doorPiece;
+var obstacles = [];
 var speed = 3;
 var customKeys = {up: '', down: '', left: '', right: ''};
 customKeys = JSON.parse(localStorage.getItem('customKeys'));
@@ -14,6 +15,8 @@ function init() {
 function positionPieces() {
     playerPiece = new component(30, 30, "red", 10, 300);
     doorPiece = new component(30, 60, "green", 1200, 285);
+    obstacles.push(new component(30, 500, "black", 450, 130));
+    obstacles.push(new component(30, 500, "black", 750, 0));
 }
 
 var myGameArea = {
@@ -26,13 +29,11 @@ var myGameArea = {
         this.interval = setInterval(updateGameArea, 20);
         window.addEventListener('keydown', function (e) {
             myGameArea.keys = myGameArea.keys || {};
-            // Utilisez les touches personnalisées si customKeys n'est pas vide, sinon utilisez les touches par défaut
             let key = customKeys && customKeys[e.key] ? customKeys[e.key.toLowerCase()] : e.key;
             myGameArea.keys[key] = true;
         });
         window.addEventListener('keyup', function (e) {
             myGameArea.keys = myGameArea.keys || {};
-            // Utilisez les touches personnalisées si customKeys n'est pas vide, sinon utilisez les touches par défaut
             let key = customKeys && customKeys[e.key] ? customKeys[e.key.toLowerCase()] : e.key;
             myGameArea.keys[key] = false;
         });
@@ -72,11 +73,15 @@ function updateGameArea() {
     playerPiece.newPos();    
     playerPiece.update();
     doorPiece.update();
-    checkCollision();
+    for (var i = 0; i < obstacles.length; i++) {
+        obstacles[i].update();
+    }
+    checkCollisionDoor();
     leavingTheMap();
+    checkCollisionObstacle();
 }
 
-function checkCollision() {
+function checkCollisionDoor() {
     var crash = true;
     var offset = speed + 1;
     if ((playerPiece.y + (playerPiece.height) < doorPiece.y  + offset) ||
@@ -107,3 +112,23 @@ function leavingTheMap() {
     }
 }
 
+function checkCollisionObstacle() {
+    for (var i = 0; i < obstacles.length; i++) {
+        var obstacle = obstacles[i];
+        var crash = true;
+        var offset = speed + 1;
+        if ((playerPiece.y + (playerPiece.height) < obstacle.y  + offset) ||
+            (playerPiece.y > obstacle.y + (obstacle.height) - offset) ||
+            (playerPiece.x + (playerPiece.width) < obstacle.x  + offset) ||
+            (playerPiece.x > obstacle.x + (obstacle.width - offset))) {
+            crash = false;
+        }
+        if (crash) {
+            if (myGameArea.keys && (myGameArea.keys[customKeys['left'].toLowerCase()] || myGameArea.keys['ArrowLeft'])) {playerPiece.x += speed;}
+            if (myGameArea.keys && (myGameArea.keys[customKeys['right'].toLowerCase()] || myGameArea.keys['ArrowRight'])) {playerPiece.x -= speed;}
+            if (myGameArea.keys && (myGameArea.keys[customKeys['up'].toLowerCase()] || myGameArea.keys['ArrowUp'])) {playerPiece.y += speed;}
+            if (myGameArea.keys && (myGameArea.keys[customKeys['down'].toLowerCase()] || myGameArea.keys['ArrowDown'])) {playerPiece.y -= speed;}
+            return;
+        }
+    }
+}
