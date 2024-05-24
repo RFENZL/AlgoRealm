@@ -1,7 +1,7 @@
 @font-face {
     font-family: 'Abstract Groovy';
-    src: url('../assets/aAbstractGroovy.ttf') format('truetype'),
-    url('../assets/aAbstractGroovy.otf') format('opentype');
+    src: url('../assets_old/fonts/aAbstractGroovy.ttf') format('truetype'),
+    url('../assets_old/fonts/aAbstractGroovy.otf') format('opentype');
 }
 
 
@@ -12,7 +12,7 @@ body, html {
 }
 
 #menu-container {
-    background-image: url('../assets/main_menu/main_bg_cave.jpg');
+    background-image: url('../assets_old/main_menu/bgs/main_bg_cave.jpg');
     background-size: cover;
     background-position: center;
     height: 100vh;
@@ -68,7 +68,7 @@ button:active {
 
 /* Options Container */
 #options-container {
-    background-image: url('../assets/main_menu/main_bg_cave.jpg');
+    background-image: url('../assets_old/main_menu/bgs/main_bg_cave.jpg');
     background-size: cover;
     background-position: center;
     display: flex;

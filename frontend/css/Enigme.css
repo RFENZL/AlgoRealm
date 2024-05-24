@@ -1,5 +1,5 @@
 body{
-    background-image: url('/frontend/assets/Parchemin.png');
+    background-image: url('/frontend/assets_old/enigmes/Parchemin.png');
     height: 100vh;
     width: 100vw;
     display: flex;
@@ -37,7 +37,7 @@ h1{
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: transparent;
-    background-image: url('/frontend/assets/Parchemin.png');
+    background-image: url('/frontend/assets_old/enigmes/Parchemin.png');
     background-size: 30vw 80vh;
     /* padding: 20px; */
     border-radius: 5px;
@@ -52,12 +52,12 @@ h1{
     width: 2vw;
     height:4.5vh;
     font-size: 35px;
-    background-image: url('/frontend/assets/main_menu/brush_stroke_circles_with_delete_crosses-removebg-preview.png');
+    background-image: url('/frontend/assets_old/main_menu/clickable/painted_cross.png');
     background-size: 2vw 4.5vh;
 }
 
 .aide{
-    background-image: url('/frontend/assets/Piece.png');
+    background-image: url('/frontend/assets_old/enigmes/Piece.png');
     background-size: 100%; 
     width: 3vw;
     height: 7vh;
@@ -78,7 +78,7 @@ p{width: 40vw;}
     color:white
 }
 .execEnigme{
-    background-image: url('/frontend/assets/main_menu/game_buttons-removebg-preview.png');
+    background-image: url('/frontend/assets_old/main_menu/clickable/start_button.png');
     background-size: 4vw 9vh;
     height: 9vh;
     width: 4vw;
