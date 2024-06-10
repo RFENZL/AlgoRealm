@@ -20,12 +20,15 @@ const config = {
 const game = new Phaser.Game(config);
 let cursors;
 let player;
-let showDebug = false;
+const speed = 300;
+let customKeys = { up: '', down: '', left: '', right: '' };
+
+// Charge les touches personnalisées depuis localStorage
+customKeys = JSON.parse(localStorage.getItem('customKeys')) || customKeys;
 
 function preload() {
     this.load.image("tiles", "assets/tilesets/tuxmon-sample-32px-extruded.png");
     this.load.tilemapTiledJSON("map", "assets/tilemaps/tuxemon-town.json");
-
     this.load.atlas("atlas", "assets/atlas/atlas.png", "assets/atlas/atlas.json");
 }
 
@@ -37,7 +40,15 @@ function create() {
     const worldLayer = map.createLayer("World", tileset, 0, 0);
     const aboveLayer = map.createLayer("Above Player", tileset, 0, 0);
 
+    // Configurer les tuiles spécifiées comme collisibles
     worldLayer.setCollisionByProperty({ collides: true });
+
+    // Spécifiez la zone de collision pour l'arbre spécifique
+    const treeCollisionZone = this.add.zone(818, 346, 64, 92); // (x: (786+850)/2, y: (300+392)/2, width: 850-786, height: 392-300)
+    this.physics.world.enable(treeCollisionZone);
+    treeCollisionZone.body.setAllowGravity(false);
+    treeCollisionZone.body.moves = false;
+
     aboveLayer.setDepth(10);
 
     const spawnPoint = map.findObject("Objects", obj => obj.name === "Spawn Point");
@@ -47,6 +58,9 @@ function create() {
         .setOffset(0, 24);
 
     this.physics.add.collider(player, worldLayer);
+
+    // Détecter la collision avec la zone de collision de l'arbre
+    this.physics.add.overlap(player, treeCollisionZone, onTreeCollision, null, this);
 
     const anims = this.anims;
     anims.create({
@@ -80,57 +94,84 @@ function create() {
 
     cursors = this.input.keyboard.createCursorKeys();
 
-    this.add.text(16, 16, 'Arrow keys to move\nPress "D" to show hitboxes', {
+    this.add.text(16, 16, 'Arrow keys to move\nPress "N" to show hitboxes', {
         font: "18px monospace",
         fill: "#000000",
         padding: { x: 20, y: 10 },
         backgroundColor: "#ffffff"
     }).setScrollFactor(0).setDepth(30);
 
-    this.input.keyboard.once("keydown-D", event => {
-        this.physics.world.createDebugGraphic();
-        const graphics = this.add.graphics().setAlpha(0.75).setDepth(20);
-        worldLayer.renderDebug(graphics, {
-            tileColor: null,
-            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255),
-            faceColor: new Phaser.Display.Color(40, 39, 37, 255)
-        });
+    const debugKey = customKeys.debug ? this.input.keyboard.addKey(customKeys.debug) : this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+    let debugMode = false;
+    let debugGraphics = null;
+
+    debugKey.on('down', event => {
+        debugMode = !debugMode;
+
+        if (debugMode) {
+            // Active le mode debug
+            this.physics.world.createDebugGraphic();
+            debugGraphics = this.add.graphics().setAlpha(0.75).setDepth(20);
+            worldLayer.renderDebug(debugGraphics, {
+                tileColor: null,
+                collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255),
+                faceColor: new Phaser.Display.Color(40, 39, 37, 255)
+            });
+        } else {
+            // Désactive le mode debug
+            this.physics.world.debugGraphic.clear();
+            if (debugGraphics) {
+                debugGraphics.clear();
+                debugGraphics.destroy();
+                debugGraphics = null;
+            }
+        }
     });
 }
 
+function onTreeCollision(player, tree) {
+    console.log('Collision with specific tree detected!');
+    // Ajoutez votre logique spécifique ici
+}
+
 function update(time, delta) {
-    const speed = 300;
     const prevVelocity = player.body.velocity.clone();
 
     player.body.setVelocity(0);
 
-    if (cursors.left.isDown) {
+    // Ajoute la logique pour les touches personnalisées
+    const leftKey = customKeys.left ? this.input.keyboard.addKey(customKeys.left) : cursors.left;
+    const rightKey = customKeys.right ? this.input.keyboard.addKey(customKeys.right) : cursors.right;
+    const upKey = customKeys.up ? this.input.keyboard.addKey(customKeys.up) : cursors.up;
+    const downKey = customKeys.down ? this.input.keyboard.addKey(customKeys.down) : cursors.down;
+
+    if (leftKey.isDown) {
         player.body.setVelocityX(-speed);
-    } else if (cursors.right.isDown) {
+        player.anims.play("misa-left-walk", true);
+    } else if (rightKey.isDown) {
         player.body.setVelocityX(speed);
+        player.anims.play("misa-right-walk", true);
     }
 
-    if (cursors.up.isDown) {
+    if (upKey.isDown) {
         player.body.setVelocityY(-speed);
-    } else if (cursors.down.isDown) {
+        player.anims.play("misa-back-walk", true);
+    } else if (downKey.isDown) {
         player.body.setVelocityY(speed);
+        player.anims.play("misa-front-walk", true);
     }
 
+    // Normalize and scale the velocity so that player can't move faster along a diagonal
     player.body.velocity.normalize().scale(speed);
 
-    if (cursors.left.isDown) {
-        player.anims.play("misa-left-walk", true);
-    } else if (cursors.right.isDown) {
-        player.anims.play("misa-right-walk", true);
-    } else if (cursors.up.isDown) {
-        player.anims.play("misa-back-walk", true);
-    } else if (cursors.down.isDown) {
-        player.anims.play("misa-front-walk", true);
-    } else {
+    // If no movement keys are being pressed, stop the animation
+    if (!leftKey.isDown && !rightKey.isDown && !upKey.isDown && !downKey.isDown) {
         player.anims.stop();
-        if (prevVelocity.x < 0) player.setTexture("atlas", "misa-left-walk");
-        else if (prevVelocity.x > 0) player.setTexture("atlas", "misa-right-walk");
-        else if (prevVelocity.y < 0) player.setTexture("atlas", "misa-back-walk");
-        else if (prevVelocity.y > 0) player.setTexture("atlas", "misa-front-walk");
+
+        // Set player to idle frame
+        // if (prevVelocity.x < 0) player.setTexture("atlas", "misa-left-walk");
+        // else if (prevVelocity.x > 0) player.setTexture("atlas", "misa-right-walk");
+        // else if (prevVelocity.y < 0) player.setTexture("atlas", "misa-back-walk");
+        // else if (prevVelocity.y > 0) player.setTexture("atlas", "misa-front-walk");
     }
 }
