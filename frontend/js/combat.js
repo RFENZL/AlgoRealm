@@ -42,6 +42,10 @@ let attaqueJ2 = false;
 
 function preload() {
     this.load.image('background', 'assets/Arène.png');
+    // this.load.audio('backgroundMusic', 'assets/Musique/Pokemon.mp3');
+    // let backgroundMusic = this.sound.add('backgroundMusic', { loop: true });
+    // backgroundMusic.play();
+    this.load.audio('attackSound', 'assets/Musique/Pokemon.mp3');
     this.load.spritesheet('joueurIdle', 'assets/Chevalier/Idle.png', { frameWidth: 120, frameHeight: 80 });
     this.load.spritesheet('joueurWalk', 'assets/Chevalier/Run.png', { frameWidth: 120, frameHeight: 80 });
     this.load.spritesheet('joueurAttack', 'assets/Chevalier/Attack.png', { frameWidth: 120, frameHeight: 80 });
@@ -55,6 +59,8 @@ function preload() {
 }
 
 function create() {
+    // let backgroundMusic = this.sound.add('backgroundMusic', { loop: true });
+    // backgroundMusic.play();
     let windowWidth = window.innerWidth;
     let windowHeight = window.innerHeight;
 
@@ -103,8 +109,15 @@ function create() {
         key: 'attack',
         frames: this.anims.generateFrameNumbers('joueurAttack', { start: 0, end: 5 }),
         frameRate: 10,
-        repeat: -1
+        repeat: 0, // Assurez-vous que l'animation ne se répète pas
+        onStart: function() {
+            var attackSound = this.sound.add('attackSound');
+            attackSound.play();
+        },
+        callbackScope: this
     });
+    
+    
     this.anims.create({
         key: 'death',
         frames: this.anims.generateFrameNumbers('joueurDeath', { start: 0, end: 9 }),
@@ -445,7 +458,6 @@ function enableButtons2() {
 
 function attack() {
     joueurSprite.anims.play('attack', true);
-
     joueurSprite.on('animationcomplete', function (animation) {
         if (animation.key === 'attack') {
             joueurSprite.anims.play('idle', true);
@@ -453,6 +465,7 @@ function attack() {
         }
         
     });
+    
     decreaseHealth2(joueur.attaque);
 }
 
