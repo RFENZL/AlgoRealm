@@ -28,7 +28,7 @@ function keyBinding() {
     keyInputs.forEach(input => {
         input.addEventListener('keydown', function(event) {
             event.preventDefault();
-            this.value = event.key.toUpperCase();
+            this.value = event.key.toLowerCase();
         });
     });
 }
@@ -40,12 +40,14 @@ function initSaveButton() {
         const downKey = document.getElementById('down-key').value;
         const leftKey = document.getElementById('left-key').value;
         const rightKey = document.getElementById('right-key').value;
+        const debugKey = document.getElementById('debug-key').value;
 
         localStorage.setItem('customKeys', JSON.stringify({
             up: upKey,
             down: downKey,
             left: leftKey,
-            right: rightKey
+            right: rightKey,
+            debug: debugKey
         }));
 
         showConfirmation();
@@ -59,6 +61,7 @@ function displaySavedKeys() {
         document.getElementById('down-key').value = savedKeys.down;
         document.getElementById('left-key').value = savedKeys.left;
         document.getElementById('right-key').value = savedKeys.right;
+        document.getElementById('debug-key').value = savedKeys.debug;
     }
 }
 

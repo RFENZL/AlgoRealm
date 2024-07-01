@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <script src="../frontend/js/global.js"></script> <!-- add this line to all the pages that need to use the global.js file (for head) -->
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../frontend/css/main.css">
+    <script src="../frontend/js/global.js"></script>
+    <title>Options</title>
 </head>
-<body>
+<body class="option_body">
 <div id="options-container">
     <h2 class="sub_title">Options</h2>
     <div class="bindings">
@@ -29,6 +31,11 @@
             <input type="text" id="right-key" class="key-input" maxlength="1">
             <button class="reset-button" data-key="right">Reset</button>
         </div>
+        <div class="binding">
+            <label for="debug-key">Activer / Désactiver Debug Mod:</label>
+            <input type="text" id="debug-key" class="key-input" maxlength="1">
+            <button class="reset-button" data-key="debug">Reset</button>
+        </div>
     </div>
     <div class="button-container">
         <button id="save-button">Sauvegarder</button>
@@ -38,4 +45,3 @@
 <script src="../frontend/js/setting.js"></script>
 </body>
 </html>
-
