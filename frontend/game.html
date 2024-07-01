@@ -12,6 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
     <script type="module">
         import GameScene from './scenes/GameScene.js';
+        import CombatScene from './scenes/combatScene.js';
 
         const config = {
             type: Phaser.AUTO,
@@ -25,7 +26,7 @@
                     gravity: { y: 0 }
                 }
             },
-            scene: [GameScene]
+            scene: [GameScene, CombatScene]
         };
 
         const game = new Phaser.Game(config);
