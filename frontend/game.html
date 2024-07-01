@@ -1,12 +1,38 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <script src="../frontend/js/global.js"></script> <!-- add this line to all the pages that need to use the global.js file (for head) -->
-    <meta charset="UTF-8">
+    <script src="../frontend/js/global.js" type="module"></script>
     <link rel="stylesheet" href="../frontend/css/map.css">
+    <meta charset="UTF-8">
+    <title>AlgoRealm</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <script type="module">
+        import GameScene from './scenes/GameScene.js';
+
+        const config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            parent: "game-container",
+            pixelArt: true,
+            physics: {
+                default: "arcade",
+                arcade: {
+                    gravity: { y: 0 }
+                }
+            },
+            scene: [GameScene]
+        };
+
+        const game = new Phaser.Game(config);
+    </script>
 </head>
 <body>
-<canvas id="gameCanvas" width="1280" height="630"></canvas>
-<script src="../frontend/js/map.js"></script>
+<div id="game-container"></div>
+<script src="js/character.js" type="module"></script>
 </body>
 </html>
