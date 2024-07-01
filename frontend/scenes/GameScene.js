@@ -112,10 +112,10 @@ class GameScene extends Phaser.Scene {
             enigmeWindow.addEventListener('unload', () => {
                 this.gameState = true;
                 if (localStorage.getItem('enigmeSolved') === 'true') {
+                    this.scene.resume();
                     this.player.setPosition(1000, 300);
                     this.checkCollisionAfterTeleport();
                 }
-                this.scene.resume();
             });
         }
     }
@@ -133,6 +133,7 @@ class GameScene extends Phaser.Scene {
 
     setupDebugging() {
         const debugKey = this.customKeys.debug ? this.input.keyboard.addKey(this.customKeys.debug) : this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        const combatKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
         let debugMode = false;
         let debugGraphics = null;
 
@@ -155,6 +156,11 @@ class GameScene extends Phaser.Scene {
                     debugGraphics = null;
                 }
             }
+        });
+
+        combatKey.on('down', event => {
+            this.scene.launch('CombatScene');
+            console.log('Combat scene launched');
         });
     }
 
