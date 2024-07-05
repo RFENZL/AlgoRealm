@@ -1,5 +1,5 @@
 function solution() {
-    var somme = 0;
+    let somme = 0;
     for(var i = 1; i <= 10; i++) {
         if (i % 2 === 0) {
             somme += i;

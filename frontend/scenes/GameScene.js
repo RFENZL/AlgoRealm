@@ -50,7 +50,13 @@ class GameScene extends Phaser.Scene {
 
     createPlayer() {
         const map = this.make.tilemap({ key: "map" });
-        const spawnPoint = map.findObject("Objects", obj => obj.name === "Spawn Point");
+        let spawnPoint = map.findObject("Objects", obj => obj.name === "Spawn Point");
+
+        // Récupérer la position du joueur stockée
+        const storedPlayerPosition = JSON.parse(localStorage.getItem('playerPosition'));
+        if (storedPlayerPosition) {
+            spawnPoint = storedPlayerPosition;
+        }
 
         this.player = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, "atlas", "misa-front")
             .setSize(30, 40)
@@ -58,6 +64,9 @@ class GameScene extends Phaser.Scene {
 
         this.physics.add.collider(this.player, this.worldLayer);
         this.physics.add.overlap(this.player, this.treeCollisionZone, this.onTreeCollision, null, this);
+
+        // Réinitialiser le spawnPoint à la valeur par défaut pour les futures apparitions
+        localStorage.removeItem('playerPosition');
     }
 
     createAnimations() {
@@ -121,14 +130,14 @@ class GameScene extends Phaser.Scene {
     }
 
     createCollisionText() {
+        // Initialiser collisionText sans texte
         this.collisionText = this.add.text(16, 16, '', {
             font: "18px monospace",
             fill: "#000000",
             padding: { x: 20, y: 10 },
             backgroundColor: "#ffffff",
-            shadow: { offsetX: 2, offsetY: 2, color: "#333333", blur: 5, stroke: true, fill: true },
-            testString: 'Appuyer sur E pour lancer l\'enigme'
-        }).setScrollFactor(0).setDepth(30);
+            shadow: { offsetX: 2, offsetY: 2, color: "#333333", blur: 5, stroke: true, fill: true }
+        }).setScrollFactor(0).setDepth(30).setVisible(false); // Définir visible à false initialement
     }
 
     setupDebugging() {
@@ -159,14 +168,16 @@ class GameScene extends Phaser.Scene {
         });
 
         combatKey.on('down', event => {
+            // Stocker la position du joueur avant de lancer la scène de combat
+            localStorage.setItem('playerPosition', JSON.stringify({ x: this.player.x, y: this.player.y }));
             this.scene.launch('CombatScene');
             console.log('Combat scene launched');
         });
     }
 
     onTreeCollision(player, tree) {
-        console.log('Collision with specific tree detected!');
         this.collisionText.setText('Appuyer sur E pour lancer l\'enigme');
+        this.collisionText.setVisible(this.collisionText.text !== '');
         this.inCollision = true;
     }
 
