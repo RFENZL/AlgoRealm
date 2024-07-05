@@ -6,6 +6,17 @@ class Personnage {
     }
 }
 
+function loadFont(name, url) {
+    var newFont = new FontFace(name, `url(${url})`);
+    newFont.load().then(function (loaded) {
+        document.fonts.add(loaded);
+    }).catch(function (error) {
+        return error;
+    });
+}
+
+loadFont('MCFont', './assets_old/fonts/Minecraftia.ttf')
+
 class CombatScene extends Phaser.Scene {
     constructor() {
         super({ key: 'CombatScene' });
@@ -24,12 +35,10 @@ class CombatScene extends Phaser.Scene {
         this.barWidth = 200;
         this.barHeight = 20;
         this.isDead = false;
-        this.buttons = [];
-        this.buttons2 = [];
+        this.turn = 'joueur'; // track whose turn it is
         this.defenseJ1 = false;
         this.defenseJ2 = false;
         this.resistance = 2;
-        this.attaqueJ2 = false;
     }
 
     preload() {
@@ -53,17 +62,18 @@ class CombatScene extends Phaser.Scene {
             this.scene.switch('GameScene');
         });
 
-        let windowWidth = window.innerWidth;
-        let windowHeight = window.innerHeight;
+        let windowWidth = 800;
+        let windowHeight = 600;
+        let margin = 20;
 
         this.add.image(windowWidth / 2, windowHeight / 2, 'background').setDisplaySize(windowWidth, windowHeight);
-        this.joueur = new Personnage(100, 40, 25);
+        this.joueur = new Personnage(100, 40, 15);
         this.joueurSprite = this.add.sprite(windowWidth / 4, windowHeight / 2, 'joueur');
         this.initialX = this.joueurSprite.x;
         this.initialY = this.joueurSprite.y;
         this.joueurSprite.setScale(4);
 
-        this.joueur2 = new Personnage(100, 30, 15);
+        this.joueur2 = new Personnage(100, 40, 15);
         this.joueurSprite2 = this.add.sprite(windowWidth * 2 / 2.9, this.initialY * 1.3, 'joueur');
         this.initialX2 = this.joueurSprite2.x;
         this.joueurSprite2.setScale(3);
@@ -90,23 +100,31 @@ class CombatScene extends Phaser.Scene {
         this.joueurSprite.anims.play('idle', true);
         this.joueurSprite2.anims.play('idle2', true);
 
-        this.barX = this.joueurSprite.x - this.barWidth / 2;
-        this.barY = this.joueurSprite.y - this.joueurSprite.displayHeight / 2;
+
+
+        this.barX = margin; // Marge à gauche
+        this.barY = margin; // Marge en haut
         this.healthBar = this.add.graphics();
         this.updateHealthBar(this.healthBar, this.barX, this.barY, this.barWidth, this.barHeight, this.joueur.pv / 100, this.joueur.pv);
 
-        this.barX2 = this.joueurSprite2.x - 20;
-        this.barY2 = this.joueurSprite2.y - this.joueurSprite2.displayHeight / 2 - 200;
+        this.barX2 = windowWidth - this.barWidth - margin;
+        this.barY2 = margin; // Marge en haut
         this.healthBar2 = this.add.graphics();
         this.updateHealthBar(this.healthBar2, this.barX2, this.barY2, this.barWidth, this.barHeight, this.joueur2.pv / 100, this.joueur2.pv);
+        // Ajout des écouteurs pour les touches 'A' et 'D'
+        this.input.keyboard.on('keydown-A', () => this.handleAttackClick());
+        this.input.keyboard.on('keydown-D', () => this.handleDefenseClick());
 
-        this.createButton(10, windowHeight / 1.3, 80, 40, 'Attack', () => this.handleAttackClick());
-        this.createButton(120, windowHeight / 1.3, 80, 40, 'Defense', () => this.handleDefenseClick());
-        this.createButton(250, windowHeight / 1.3, 80, 40, 'Run', () => this.handleRunClick());
+        // Ajouter les boutons sous le joueur
+        this.createButton(100, windowHeight / 1.2, 150, 50, 'Attack [A]', () => this.handleAttackClick());
+        this.createButton(300, windowHeight / 1.2, 150, 50, 'Defense [D]', () => this.handleDefenseClick());
 
-        // this.createButton(10, windowHeight / 1.2, 80, 40, 'Attack', () => this.handleAttackClick2());
-        // this.createButton(120, windowHeight / 1.2, 80, 40, 'Defense', () => this.handleDefenseClick2());
-        // this.createButton(250, windowHeight / 1.2, 80, 40, 'Run', () => this.handleRunClick2());
+        // Ajouter le texte pour les actions des personnages
+        this.actionText = this.add.text(windowWidth / 2, windowHeight / 4, '', {
+            font: '16px MCFont',
+            fill: '#ffffff',
+            align: 'center'
+        }).setOrigin(0.5);
     }
 
     update() {
@@ -115,19 +133,13 @@ class CombatScene extends Phaser.Scene {
     createAnimations() {
         this.anims.create({
             key: 'idle',
-            frames: this.anims.generateFrameNumbers('joueurIdle', { start: 0, end: 32 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'walk',
-            frames: this.anims.generateFrameNumbers('joueurWalk', { start: 0, end: 9 }),
+            frames: this.anims.generateFrameNumbers('joueurIdle', { start: 0, end: 9 }),
             frameRate: 10,
             repeat: -1
         });
         this.anims.create({
             key: 'attack',
-            frames: this.anims.generateFrameNumbers('joueurAttack', { start: 0, end: 5 }),
+            frames: this.anims.generateFrameNumbers('joueurAttack', { start: 0, end: 3 }),
             frameRate: 10,
             repeat: 0,
             onStart: function () {
@@ -156,133 +168,135 @@ class CombatScene extends Phaser.Scene {
             repeat: -1
         });
         this.anims.create({
-            key: 'walk2',
-            frames: this.anims.generateFrameNumbers('goblinWalk', { start: 0, end: 9 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
             key: 'attack2',
-            frames: this.anims.generateFrameNumbers('goblinAttack', { start: 0, end: 8 }),
-            frameRate: 15,
+            frames: this.anims.generateFrameNumbers('goblinAttack', { start: 0, end: 7 }),
+            frameRate: 10,
             repeat: 0
         });
         this.anims.create({
             key: 'death2',
-            frames: this.anims.generateFrameNumbers('goblinDeath', { start: 0, end: 7 }),
+            frames: this.anims.generateFrameNumbers('goblinDeath', { start: 0, end: 3 }),
             frameRate: 10,
             repeat: 0
         });
         this.anims.create({
             key: 'deathStatic2',
-            frames: [{ key: 'goblinDeathStatic', frame: 7 }],
+            frames: [{ key: 'goblinDeathStatic', frame: 3 }],
             frameRate: 10,
-            repeat: 0
+            repeat: -1
         });
     }
 
-    createButton(x, y, width, height, text, callback) {
-        let button = this.add.graphics();
-        button.fillStyle(0xffffff, 1);
-        button.fillRoundedRect(x, y, width, height, 10);
-
-        let buttonText = this.add.text(x + width / 2, y + height / 2, text, {
-            font: '20px Arial',
-            fill: '#000000',
-            align: 'center'
-        }).setOrigin(0.5);
-
-        button.setInteractive(new Phaser.Geom.Rectangle(x, y, width, height), Phaser.Geom.Rectangle.Contains);
-        button.on('pointerdown', callback);
-
-        this.buttons.push(button);
-        this.buttons.push(buttonText);
-    }
-
-    updateHealthBar(graphics, x, y, width, height, pourcentage, joueurPv) {
-        graphics.clear();
-        graphics.fillStyle(0xff0000, 1);
-        graphics.fillRect(x, y, width, height);
-        graphics.fillStyle(0x00ff00, 1);
-        graphics.fillRect(x, y, width * pourcentage, height);
-        graphics.lineStyle(2, 0xffffff, 1);
-        graphics.strokeRect(x, y, width, height);
-
-        let healthText = `${joueurPv} PV`;
-        let text = this.add.text(x + width / 2, y + height / 2, healthText, {
-            font: '18px Arial',
-            fill: '#ffffff'
-        }).setOrigin(0.5);
+    createButton(x, y, width, height, text, onClick) {
+        let button = this.add.rectangle(x, y, width, height, 0xffffff).setInteractive();
+        this.add.text(x, y, text, { font: '16px Arial', fill: '#000000' }).setOrigin(0.5);
+        button.on('pointerup', onClick);
+        return button;
     }
 
     handleAttackClick() {
-        if (this.joueurSprite.anims.getName() === 'attack' || this.isMoving) return;
+        if (this.isMoving || this.turn !== 'joueur') return;
+        this.isMoving = true;
 
-        this.defenseJ1 = false;
         this.joueurSprite.anims.play('attack', true);
+        this.updateActionText('Joueur attaque !');
         this.time.delayedCall(1000, () => {
-            let damage = this.joueur.attaque;
-            if (this.defenseJ2) {
-                damage -= this.joueur2.defense;
-            }
-            if (damage < 0) damage = 0;
-            this.joueur2.pv -= damage;
+            this.isMoving = false;
+            this.joueurSprite.anims.play('idle', true);
 
+            let damage = this.joueur.attaque - (this.defenseJ2 ? this.joueur2.defense * this.resistance : this.joueur2.defense);
+            this.joueur2.pv -= Math.max(damage, 0);
             this.updateHealthBar(this.healthBar2, this.barX2, this.barY2, this.barWidth, this.barHeight, this.joueur2.pv / 100, this.joueur2.pv);
-            this.checkDeath();
+            if (this.joueur2.pv <= 0) {
+                this.joueurSprite2.anims.play('death2', true);
+                this.isDead = true;
+                this.winText.setText('Vous avez gagné !').setAlpha(1);
+                this.time.delayedCall(3000, () => {
+                    this.scene.switch('GameScene');
+                });
+            } else {
+                this.turn = 'ennemi';
+                this.enemyTurn();
+            }
         });
     }
 
     handleDefenseClick() {
+        if (this.turn !== 'joueur') return;
         this.defenseJ1 = true;
-    }
-
-    handleRunClick() {
-        // Logique de fuite pour le joueur 1
-    }
-
-    handleAttackClick2() {
-        if (this.joueurSprite2.anims.getName() === 'attack' || this.isMoving) return;
-
-        this.defenseJ2 = false;
-        this.joueurSprite2.anims.play('attack2', true);
+        this.joueurSprite.setTint(0x00ff00);
+        this.updateActionText('Joueur se défend !');
         this.time.delayedCall(1000, () => {
-            let damage = this.joueur2.attaque;
-            if (this.defenseJ1) {
-                damage -= this.joueur.defense;
-            }
-            if (damage < 0) damage = 0;
-            this.joueur.pv -= damage;
-
-            this.updateHealthBar(this.healthBar, this.barX, this.barY, this.barWidth, this.barHeight, this.joueur.pv / 100, this.joueur.pv);
-            this.checkDeath();
+            this.defenseJ1 = false;
+            this.joueurSprite.clearTint();
+            this.turn = 'ennemi';
+            this.enemyTurn();
         });
     }
 
-    handleDefenseClick2() {
-        this.defenseJ2 = true;
-    }
-
-    handleRunClick2() {
-        // Logique de fuite pour le joueur 2
-    }
-
-    checkDeath() {
-        if (this.joueur.pv <= 0 && !this.isDead) {
-            this.isDead = true;
-            this.joueurSprite.anims.play('death', true);
-            this.time.delayedCall(1000, () => {
-                this.joueurSprite.anims.play('deathStatic', true);
-                this.deathText.setText('Défaite du Chevalier !').setAlpha(1);
-            });
-        } else if (this.joueur2.pv <= 0 && !this.isDead) {
-            this.isDead = true;
-            this.joueurSprite2.anims.play('death2', true);
-            this.time.delayedCall(1000, () => {
-                this.joueurSprite2.anims.play('deathStatic2', true);
-                this.winText.setText('Victoire du Chevalier !').setAlpha(1);
+    enemyTurn() {
+        if (this.isDead) {
+            this.time.delayedCall(2000, () => {
+                this.scene.switch('GameScene');
             });
         }
+
+        this.time.delayedCall(1000, () => {
+            // Randomly decide if the enemy attacks or defends
+            if (Math.random() < 0.5) {
+                this.enemyAttack();
+            } else {
+                this.enemyDefense();
+            }
+        });
+    }
+
+    enemyAttack() {
+        this.joueurSprite2.anims.play('attack2', true);
+        this.updateActionText('Ennemi attaque !');
+        this.time.delayedCall(1000, () => {
+            this.joueurSprite2.anims.play('idle2', true);
+
+            let damage = this.joueur2.attaque - (this.defenseJ1 ? this.joueur.defense * this.resistance : this.joueur.defense);
+            this.joueur.pv -= Math.max(damage, 0);
+            this.updateHealthBar(this.healthBar, this.barX, this.barY, this.barWidth, this.barHeight, this.joueur.pv / 100, this.joueur.pv);
+            if (this.joueur.pv <= 0) {
+                this.joueurSprite.anims.play('death', true);
+                this.isDead = true;
+                this.deathText.setText('Vous avez perdu !').setAlpha(1);
+            } else {
+                this.turn = 'joueur';
+            }
+        });
+    }
+
+    enemyDefense() {
+        this.defenseJ2 = true;
+        this.joueurSprite2.setTint(0x00ff00);
+        this.updateActionText('Ennemi se défend !');
+        this.time.delayedCall(1000, () => {
+            this.defenseJ2 = false;
+            this.joueurSprite2.clearTint();
+            this.turn = 'joueur';
+        });
+    }
+
+    updateHealthBar(healthBar, x, y, width, height, percentage, pv) {
+        healthBar.clear();
+        healthBar.fillStyle(0xff0000, 1);
+        healthBar.fillRect(x, y, width, height);
+        healthBar.fillStyle(0x00ff00, 1);
+        healthBar.fillRect(x, y, width * percentage, height);
+        healthBar.lineStyle(2, 0x000000, 1);
+        healthBar.strokeRect(x, y, width, height);
+    }
+
+    updateActionText(text) {
+        this.actionText.setText(text);
+        this.actionText.setAlpha(1);
+        this.time.delayedCall(2000, () => {
+            this.actionText.setAlpha(0);
+        });
     }
 }
 

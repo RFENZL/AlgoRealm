@@ -17,6 +17,10 @@ class GameScene extends Phaser.Scene {
         this.load.image("tiles", "assets/tilesets/tuxmon-sample-32px-extruded.png");
         this.load.tilemapTiledJSON("map", "assets/tilemaps/tuxemon-town.json");
         this.load.atlas("atlas", "assets/atlas/atlas.png", "assets/atlas/atlas.json");
+        this.load.spritesheet("goblinMoveDown", "assets/Goblin/body/goblinMoveDown.png", { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet("goblinMoveUp", "assets/Goblin/body/goblinMoveUp.png", { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet("goblinMoveLeft", "assets/Goblin/body/goblinMoveLeft.png", { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet("goblinMoveRight", "assets/Goblin/body/goblinMoveRight.png", { frameWidth: 64, frameHeight: 64 });
     }
 
     create() {
@@ -27,6 +31,7 @@ class GameScene extends Phaser.Scene {
         this.createControls();
         this.createCollisionText();
         this.setupDebugging();
+        this.createGoblin();
     }
 
     createMap() {
@@ -69,6 +74,30 @@ class GameScene extends Phaser.Scene {
         localStorage.removeItem('playerPosition');
     }
 
+    createGoblin() {
+        this.goblin = this.physics.add.sprite(1190, 990, "atlas", "misa-front")
+            .setSize(30, 40)
+            .setOffset(0, 24);
+
+        this.physics.add.collider(this.goblin, this.worldLayer);
+        this.physics.add.overlap(this.goblin, this.player, this.onGoblinCollision, null, this);
+
+        this.goblin2 = this.physics.add.sprite(625, 590, "atlas", "misa-front")
+            .setSize(30, 40)
+            .setOffset(0, 24);
+        this.physics.add.collider(this.goblin2, this.worldLayer);
+        this.physics.add.overlap(this.goblin2, this.player, this.onGoblinCollision, null, this);
+    }
+
+    onGoblinCollision(player, goblin) {
+        console.log('Collision with goblin detected!');
+        player.body.setVelocity(0);
+        player.anims.stop();
+
+        this.scene.launch('CombatScene');
+        this.scene.pause();
+    }
+
     createAnimations() {
         const anims = this.anims;
         anims.create({
@@ -92,6 +121,30 @@ class GameScene extends Phaser.Scene {
         anims.create({
             key: "misa-back-walk",
             frames: anims.generateFrameNames("atlas", { prefix: "misa-back-walk.", start: 0, end: 3, zeroPad: 3 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        anims.create({
+            key: "goblin-up-walk",
+            frames: anims.generateFrameNumbers("goblinMoveUp", { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        anims.create({
+            key: "goblin-down-walk",
+            frames: anims.generateFrameNumbers("goblinMoveDown", { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        anims.create({
+            key: "goblin-left-walk",
+            frames: anims.generateFrameNumbers("goblinMoveLeft", { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        anims.create({
+            key: "goblin-right-walk",
+            frames: anims.generateFrameNumbers("goblinMoveRight", { start: 0, end: 7 }),
             frameRate: 10,
             repeat: -1
         });
@@ -191,6 +244,11 @@ class GameScene extends Phaser.Scene {
         const rightKey = right ? this.input.keyboard.addKey(right) : this.cursors.right;
         const upKey = up ? this.input.keyboard.addKey(up) : this.cursors.up;
         const downKey = down ? this.input.keyboard.addKey(down) : this.cursors.down;
+        const goblinSpeed = 100;
+        const goblinStartY = 590;
+        const goblinEndY = 990;
+        const goblin2StartX = 625;
+        const goblin2EndX = 125;
 
         if (leftKey.isDown) {
             this.player.body.setVelocityX(-this.speed);
@@ -220,6 +278,24 @@ class GameScene extends Phaser.Scene {
         } else if (this.inCollision && !Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.treeCollisionZone.getBounds())) {
             this.collisionText.setText('');
             this.inCollision = false;
+        }
+
+        if (this.goblin.y <= goblinStartY) {
+            this.goblin.body.setVelocityY(goblinSpeed);
+            this.goblin.anims.play("goblin-down-walk", true);
+        } else if (this.goblin.y >= goblinEndY) {
+            this.goblin.body.setVelocityY(-goblinSpeed);
+            this.goblin.anims.play("goblin-up-walk", true);
+        }
+
+        this.goblin.body.velocity.normalize().scale(goblinSpeed);
+
+        if (this.goblin2.x >= goblin2StartX) {
+            this.goblin2.body.setVelocityX(-goblinSpeed);
+            this.goblin2.anims.play("goblin-left-walk", true);
+        } else if (this.goblin2.x <= goblin2EndX) {
+            this.goblin2.body.setVelocityX(goblinSpeed);
+            this.goblin2.anims.play("goblin-right-walk", true);
         }
     }
 
