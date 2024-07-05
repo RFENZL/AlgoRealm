@@ -33,13 +33,13 @@ function preload ()
     this.load.image('houses', 'assets/houses.png');
 
     // Chargez l'image du personnage
-    this.load.image('character', 'assets/main_menu/gemme_logo.png');
-    this.load.image('test', 'assets/main_menu/gemme_logo.png');
+    this.load.image('character', 'assets/goblin/goblinPattern/idle/GoblinIdleRight.png');
+    this.load.spritesheet('goblin', 'assets/goblin/goblinPattern/idle/GoblinIdleLeft.png', { frameWidth: 63.3, frameHeight: 65 });
 
     this.load.on('complete', () => {
         // Créez un personnage à partir de la classe Character
         character = new Character(this, 100, 100, 'character');
-        test = new Enemie(this, 600, 300, 'test');
+        test = new Enemie(this, 600, 300, 'goblin');
         console.log(customKeys);
     });
 }
@@ -47,6 +47,9 @@ function preload ()
 
 function create ()
 {
+    test.globalMovement(1500, 250, 150);
+    // test.moveLeft1(1500, 250, 150);
+    //test.createSquareMovement(this, test.sprite, 250, 2500, 500);
     /**
     // Create the map from the Tiled JSON file
     var map = this.make.tilemap({ key: 'map' });
@@ -77,6 +80,7 @@ function create ()
 function update ()
 {
     this.physics.add.collider(character.sprite, test.sprite, collisionHandler);
+    test.sprite.anims.play('idle', true);
     character.stop();
 
     if ((customKeys['left'] && this.input.keyboard.checkDown(this.input.keyboard.addKey(customKeys['left']), 1)) 
@@ -98,6 +102,7 @@ function update ()
     }
 }
 
-function collisionHandler (character, test) {
+function collisionHandler () {
     console.log('collision');
+    //window.location.href = 'combat.html';
 }
