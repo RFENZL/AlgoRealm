@@ -31,3 +31,7 @@ function testEnigme() {
         outputDiv.textContent = "Console: Erreur - " + error.message;
     }
 }
+
+function openDocumentation() {
+    window.open('https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Statements/for', '_blank');
+}

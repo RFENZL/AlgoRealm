@@ -112,7 +112,7 @@ class GameScene extends Phaser.Scene {
 
     handleEKeyDown() {
         if (this.inCollision || this.debugMode) {
-            let enigmeWindow = window.open('enigme.html', 'Enigme', 'height=600,width=800,status=yes,toolbar=no,menubar=no,location=no');
+            let enigmeWindow = window.open('enigme.html', 'Enigme', 'height=800,width=1200,status=yes,toolbar=no,menubar=no,location=no');
             this.gameState = false;
             localStorage.setItem('gameState', 'false');
             localStorage.setItem('enigmeSolved', 'false');
@@ -168,10 +168,11 @@ class GameScene extends Phaser.Scene {
         });
 
         combatKey.on('down', event => {
-            // Stocker la position du joueur avant de lancer la scène de combat
-            localStorage.setItem('playerPosition', JSON.stringify({ x: this.player.x, y: this.player.y }));
-            this.scene.launch('CombatScene');
-            console.log('Combat scene launched');
+            if(debugMode) {
+                // Stocker la position du joueur avant de lancer la scène de combat
+                localStorage.setItem('playerPosition', JSON.stringify({x: this.player.x, y: this.player.y}));
+                this.scene.launch('CombatScene');
+            }
         });
     }
 
