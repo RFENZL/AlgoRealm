@@ -24,6 +24,9 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
+        // Charger l'état du gobelin depuis le stockage local
+        this.goblinDefeated = localStorage.getItem('goblinDefeated') === 'true';
+
         this.createMap();
         this.createPlayer();
         this.createAnimations();
@@ -31,7 +34,14 @@ class GameScene extends Phaser.Scene {
         this.createControls();
         this.createCollisionText();
         this.setupDebugging();
-        this.createGoblin();
+
+        // Créer le gobelin seulement s'il n'a pas été vaincu
+        if (!this.goblinDefeated) {
+            this.createGoblin();
+        }
+
+        // Écouter l'événement de victoire du combat
+        this.events.on('combatWon', this.onCombatWon, this);
     }
 
     createMap() {
@@ -81,12 +91,6 @@ class GameScene extends Phaser.Scene {
 
         this.physics.add.collider(this.goblin, this.worldLayer);
         this.physics.add.overlap(this.goblin, this.player, this.onGoblinCollision, null, this);
-
-        this.goblin2 = this.physics.add.sprite(625, 590, "atlas", "misa-front")
-            .setSize(30, 40)
-            .setOffset(0, 24);
-        this.physics.add.collider(this.goblin2, this.worldLayer);
-        this.physics.add.overlap(this.goblin2, this.player, this.onGoblinCollision, null, this);
     }
 
     onGoblinCollision(player, goblin) {
@@ -94,8 +98,18 @@ class GameScene extends Phaser.Scene {
         player.body.setVelocity(0);
         player.anims.stop();
 
+        localStorage.setItem('playerPosition', JSON.stringify({x: this.player.x, y: this.player.y}));
+
         this.scene.launch('CombatScene');
         this.scene.pause();
+    }
+
+    onCombatWon() {
+        this.goblinDefeated = true;
+        localStorage.setItem('goblinDefeated', 'true');
+        if (this.goblin) {
+            this.goblin.destroy();
+        }
     }
 
     createAnimations() {
@@ -177,6 +191,8 @@ class GameScene extends Phaser.Scene {
                     this.scene.resume();
                     this.player.setPosition(1000, 300);
                     this.checkCollisionAfterTeleport();
+                } else {
+                    this.scene.resume();
                 }
             });
         }
@@ -247,8 +263,6 @@ class GameScene extends Phaser.Scene {
         const goblinSpeed = 100;
         const goblinStartY = 590;
         const goblinEndY = 990;
-        const goblin2StartX = 625;
-        const goblin2EndX = 125;
 
         if (leftKey.isDown) {
             this.player.body.setVelocityX(-this.speed);
@@ -280,22 +294,17 @@ class GameScene extends Phaser.Scene {
             this.inCollision = false;
         }
 
-        if (this.goblin.y <= goblinStartY) {
-            this.goblin.body.setVelocityY(goblinSpeed);
-            this.goblin.anims.play("goblin-down-walk", true);
-        } else if (this.goblin.y >= goblinEndY) {
-            this.goblin.body.setVelocityY(-goblinSpeed);
-            this.goblin.anims.play("goblin-up-walk", true);
-        }
+        // Check if goblin and its body are defined before accessing properties
+        if (this.goblin && this.goblin.body) {
+            if (this.goblin.y <= goblinStartY) {
+                this.goblin.body.setVelocityY(goblinSpeed);
+                this.goblin.anims.play("goblin-down-walk", true);
+            } else if (this.goblin.y >= goblinEndY) {
+                this.goblin.body.setVelocityY(-goblinSpeed);
+                this.goblin.anims.play("goblin-up-walk", true);
+            }
 
-        this.goblin.body.velocity.normalize().scale(goblinSpeed);
-
-        if (this.goblin2.x >= goblin2StartX) {
-            this.goblin2.body.setVelocityX(-goblinSpeed);
-            this.goblin2.anims.play("goblin-left-walk", true);
-        } else if (this.goblin2.x <= goblin2EndX) {
-            this.goblin2.body.setVelocityX(goblinSpeed);
-            this.goblin2.anims.play("goblin-right-walk", true);
+            this.goblin.body.velocity.normalize().scale(goblinSpeed);
         }
     }
 

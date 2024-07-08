@@ -1,42 +1,41 @@
-/* START NAVBAR */
-* {
+body, html {
+    height: 100%;
     margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    font-family: 'Cinzel', serif;
+    background-color: #f5f5f5;
+    overflow: hidden; /* Désactive le défilement vertical */
 }
 
 .navbar {
-    position: fixed;
+    background-color: #2d2d2d; /* Gris foncé pour un aspect médiéval */
+    border-bottom: 4px solid #d4af37; /* Bordure dorée */
+    padding: 1rem 0;
+    position: fixed; /* Fixe la navbar en haut de la page */
     top: 0;
-    left: 0;
     width: 100%;
-    z-index: 100;
-    background-color: transparent;
-    text-align: center;
+    z-index: 1000; /* Assure que la navbar est au-dessus du contenu */
 }
 
 .navbar-list {
-    list-style-type: none;
-    padding: 0;
+    list-style: none;
+    display: flex;
+    justify-content: center;
     margin: 0;
-    display: inline-block;
+    padding: 0;
 }
 
 .navbar-item {
-    display: inline;
-    margin-right: 10px;
+    margin: 0 2rem;
 }
 
 .navbar-link {
-    color: #ff0000;
     text-decoration: none;
-    font-size: 2.2em; /* Augmente la taille du texte */
+    color: #d4af37; /* Couleur dorée */
+    font-size: 1.25rem; /* Taille de police plus grande */
+    font-weight: bold;
+    transition: color 0.3s;
 }
 
 .navbar-link:hover {
-    color: #ff0000;
-    text-decoration: underline;
-    font-weight: bold; /* Rend le texte plus gras lors du survol */
+    color: #ffea70; /* Couleur dorée plus claire au survol */
 }
-
-/* END NAVBAR */

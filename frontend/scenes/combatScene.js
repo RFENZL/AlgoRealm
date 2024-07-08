@@ -169,7 +169,7 @@ class CombatScene extends Phaser.Scene {
         });
         this.anims.create({
             key: 'attack2',
-            frames: this.anims.generateFrameNumbers('goblinAttack', { start: 0, end: 7 }),
+            frames: this.anims.generateFrameNumbers('goblinAttack', { start: 0, end: 5 }),
             frameRate: 10,
             repeat: 0
         });
@@ -211,6 +211,10 @@ class CombatScene extends Phaser.Scene {
                 this.joueurSprite2.anims.play('death2', true);
                 this.isDead = true;
                 this.winText.setText('Vous avez gagné !').setAlpha(1);
+
+                // Notifier GameScene de la victoire
+                this.scene.get('GameScene').events.emit('combatWon');
+
                 this.time.delayedCall(3000, () => {
                     this.scene.switch('GameScene');
                 });
@@ -264,6 +268,10 @@ class CombatScene extends Phaser.Scene {
                 this.joueurSprite.anims.play('death', true);
                 this.isDead = true;
                 this.deathText.setText('Vous avez perdu !').setAlpha(1);
+                localStorage.removeItem('playerPosition');
+                this.time.delayedCall(3000, () => {
+                    this.scene.switch('GameScene');
+                });
             } else {
                 this.turn = 'joueur';
             }
