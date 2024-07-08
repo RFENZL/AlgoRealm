@@ -4,32 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <style>
-        .terminal {
-            background-color: #1e1e1e;
-            color: #d4d4d4;
-            font-family: 'Courier New', Courier, monospace;
-        }
-        .terminal-title {
-            color: #00ff00;
-        }
-        .terminal-button {
-            background-color: #007acc;
-        }
-        .terminal-button:hover {
-            background-color: #005f99;
-        }
-        .terminal-input {
-            background-color: #2d2d2d;
-            color: #d4d4d4;
-            font-family: 'Courier New', Courier, monospace;
-        }
-        .terminal-output {
-            background-color: #2d2d2d;
-            color: #00ff00;
-            font-family: 'Courier New', Courier, monospace;
-        }
-    </style>
+    <link rel="stylesheet" href="css/Enigme.css">
 </head>
 <body class="flex justify-center items-center h-screen bg-black text-white">
 <div class="terminal p-8 w-4/5 max-w-4xl">
@@ -50,6 +25,6 @@
     <button class="button bg-green-700 text-white border-none px-5 py-2 text-lg mt-5 rounded-md cursor-pointer transition duration-300 hover:bg-green-800" onclick="testEnigme()">Exécuter</button>
     <div class="console terminal-output p-4 mt-5 rounded-md text-left" id="Console">Console:</div>
 </div>
-<script src="../frontend/js/enigme.js"></script>
+<script src="js/enigme.js"></script>
 </body>
 </html>

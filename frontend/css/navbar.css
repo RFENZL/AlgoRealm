@@ -10,7 +10,6 @@ body, html {
     background-color: #2d2d2d; /* Gris foncé pour un aspect médiéval */
     border-bottom: 4px solid #d4af37; /* Bordure dorée */
     padding: 1rem 0;
-    position: fixed; /* Fixe la navbar en haut de la page */
     top: 0;
     width: 100%;
     z-index: 1000; /* Assure que la navbar est au-dessus du contenu */

@@ -31,9 +31,9 @@ function createNavbar() {
         navbar.innerHTML = `
             <nav class="navbar">
                 <ul class="navbar-list">
-                    <li class="navbar-item"><a href="../frontend/index.html" class="navbar-link">Home</a></li>
-                    <li class="navbar-item"><a href="../frontend/game.html" class="navbar-link">Game</a></li>
-                    <li class="navbar-item"><a href="../frontend/option.html" class="navbar-link">Options</a></li>
+                    <li class="navbar-item"><a href="/index.html" class="navbar-link">Home</a></li>
+                    <li class="navbar-item"><a href="/game.html" class="navbar-link">Game</a></li>
+                    <li class="navbar-item"><a href="/option.html" class="navbar-link">Options</a></li>
                 </ul>
             </nav>
         `;
