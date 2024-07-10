@@ -15,12 +15,12 @@ function setHeader() {
         const favicon = document.createElement('link');
         favicon.setAttribute('rel', 'icon');
         favicon.setAttribute('type', 'image/png');
-        favicon.setAttribute('href', '../frontend/assets_old/main_menu/logos/gemme_logo.png');
+        favicon.setAttribute('href', 'assets_old/main_menu/logos/gemme_logo.png');
         head.appendChild(favicon);
 
         const navbarStyle = document.createElement('link');
         navbarStyle.setAttribute('rel', 'stylesheet');
-        navbarStyle.setAttribute('href', '../frontend/css/navbar.css');
+        navbarStyle.setAttribute('href', 'css/navbar.css');
         head.appendChild(navbarStyle);
     });
 }
