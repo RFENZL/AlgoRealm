@@ -1,5 +1,5 @@
 function solution() {
-    var somme = 0;
+    let somme = 0;
     for(var i = 1; i <= 10; i++) {
         if (i % 2 === 0) {
             somme += i;
@@ -30,4 +30,8 @@ function testEnigme() {
     } catch (error) {
         outputDiv.textContent = "Console: Erreur - " + error.message;
     }
+}
+
+function openDocumentation() {
+    window.open('https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Statements/for', '_blank');
 }

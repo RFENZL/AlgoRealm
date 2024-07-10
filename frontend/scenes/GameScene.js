@@ -17,9 +17,16 @@ class GameScene extends Phaser.Scene {
         this.load.image("tiles", "assets/tilesets/tuxmon-sample-32px-extruded.png");
         this.load.tilemapTiledJSON("map", "assets/tilemaps/tuxemon-town.json");
         this.load.atlas("atlas", "assets/atlas/atlas.png", "assets/atlas/atlas.json");
+        this.load.spritesheet("goblinMoveDown", "assets/Goblin/body/goblinMoveDown.png", { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet("goblinMoveUp", "assets/Goblin/body/goblinMoveUp.png", { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet("goblinMoveLeft", "assets/Goblin/body/goblinMoveLeft.png", { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet("goblinMoveRight", "assets/Goblin/body/goblinMoveRight.png", { frameWidth: 64, frameHeight: 64 });
     }
 
     create() {
+        // Charger l'état du gobelin depuis le stockage local
+        this.goblinDefeated = localStorage.getItem('goblinDefeated') === 'true';
+
         this.createMap();
         this.createPlayer();
         this.createAnimations();
@@ -27,6 +34,14 @@ class GameScene extends Phaser.Scene {
         this.createControls();
         this.createCollisionText();
         this.setupDebugging();
+
+        // Créer le gobelin seulement s'il n'a pas été vaincu
+        if (!this.goblinDefeated) {
+            this.createGoblin();
+        }
+
+        // Écouter l'événement de victoire du combat
+        this.events.on('combatWon', this.onCombatWon, this);
     }
 
     createMap() {
@@ -50,7 +65,13 @@ class GameScene extends Phaser.Scene {
 
     createPlayer() {
         const map = this.make.tilemap({ key: "map" });
-        const spawnPoint = map.findObject("Objects", obj => obj.name === "Spawn Point");
+        let spawnPoint = map.findObject("Objects", obj => obj.name === "Spawn Point");
+
+        // Récupérer la position du joueur stockée
+        const storedPlayerPosition = JSON.parse(localStorage.getItem('playerPosition'));
+        if (storedPlayerPosition) {
+            spawnPoint = storedPlayerPosition;
+        }
 
         this.player = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, "atlas", "misa-front")
             .setSize(30, 40)
@@ -58,6 +79,37 @@ class GameScene extends Phaser.Scene {
 
         this.physics.add.collider(this.player, this.worldLayer);
         this.physics.add.overlap(this.player, this.treeCollisionZone, this.onTreeCollision, null, this);
+
+        // Réinitialiser le spawnPoint à la valeur par défaut pour les futures apparitions
+        localStorage.removeItem('playerPosition');
+    }
+
+    createGoblin() {
+        this.goblin = this.physics.add.sprite(1190, 990, "atlas", "misa-front")
+            .setSize(30, 40)
+            .setOffset(0, 24);
+
+        this.physics.add.collider(this.goblin, this.worldLayer);
+        this.physics.add.overlap(this.goblin, this.player, this.onGoblinCollision, null, this);
+    }
+
+    onGoblinCollision(player, goblin) {
+        console.log('Collision with goblin detected!');
+        player.body.setVelocity(0);
+        player.anims.stop();
+
+        localStorage.setItem('playerPosition', JSON.stringify({x: this.player.x, y: this.player.y}));
+
+        this.scene.launch('CombatScene');
+        this.scene.pause();
+    }
+
+    onCombatWon() {
+        this.goblinDefeated = true;
+        localStorage.setItem('goblinDefeated', 'true');
+        if (this.goblin) {
+            this.goblin.destroy();
+        }
     }
 
     createAnimations() {
@@ -86,6 +138,30 @@ class GameScene extends Phaser.Scene {
             frameRate: 10,
             repeat: -1
         });
+        anims.create({
+            key: "goblin-up-walk",
+            frames: anims.generateFrameNumbers("goblinMoveUp", { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        anims.create({
+            key: "goblin-down-walk",
+            frames: anims.generateFrameNumbers("goblinMoveDown", { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        anims.create({
+            key: "goblin-left-walk",
+            frames: anims.generateFrameNumbers("goblinMoveLeft", { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        anims.create({
+            key: "goblin-right-walk",
+            frames: anims.generateFrameNumbers("goblinMoveRight", { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
     }
 
     setupCamera() {
@@ -103,7 +179,7 @@ class GameScene extends Phaser.Scene {
 
     handleEKeyDown() {
         if (this.inCollision || this.debugMode) {
-            let enigmeWindow = window.open('enigme.html', 'Enigme', 'height=600,width=800,status=yes,toolbar=no,menubar=no,location=no');
+            let enigmeWindow = window.open('enigme.html', 'Enigme', 'height=800,width=1200,status=yes,toolbar=no,menubar=no,location=no');
             this.gameState = false;
             localStorage.setItem('gameState', 'false');
             localStorage.setItem('enigmeSolved', 'false');
@@ -112,27 +188,30 @@ class GameScene extends Phaser.Scene {
             enigmeWindow.addEventListener('unload', () => {
                 this.gameState = true;
                 if (localStorage.getItem('enigmeSolved') === 'true') {
+                    this.scene.resume();
                     this.player.setPosition(1000, 300);
                     this.checkCollisionAfterTeleport();
+                } else {
+                    this.scene.resume();
                 }
-                this.scene.resume();
             });
         }
     }
 
     createCollisionText() {
+        // Initialiser collisionText sans texte
         this.collisionText = this.add.text(16, 16, '', {
             font: "18px monospace",
             fill: "#000000",
             padding: { x: 20, y: 10 },
             backgroundColor: "#ffffff",
-            shadow: { offsetX: 2, offsetY: 2, color: "#333333", blur: 5, stroke: true, fill: true },
-            testString: 'Appuyer sur E pour lancer l\'enigme'
-        }).setScrollFactor(0).setDepth(30);
+            shadow: { offsetX: 2, offsetY: 2, color: "#333333", blur: 5, stroke: true, fill: true }
+        }).setScrollFactor(0).setDepth(30).setVisible(false); // Définir visible à false initialement
     }
 
     setupDebugging() {
         const debugKey = this.customKeys.debug ? this.input.keyboard.addKey(this.customKeys.debug) : this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        const combatKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
         let debugMode = false;
         let debugGraphics = null;
 
@@ -156,11 +235,19 @@ class GameScene extends Phaser.Scene {
                 }
             }
         });
+
+        combatKey.on('down', event => {
+            if(debugMode) {
+                // Stocker la position du joueur avant de lancer la scène de combat
+                localStorage.setItem('playerPosition', JSON.stringify({x: this.player.x, y: this.player.y}));
+                this.scene.launch('CombatScene');
+            }
+        });
     }
 
     onTreeCollision(player, tree) {
-        console.log('Collision with specific tree detected!');
         this.collisionText.setText('Appuyer sur E pour lancer l\'enigme');
+        this.collisionText.setVisible(this.collisionText.text !== '');
         this.inCollision = true;
     }
 
@@ -173,6 +260,9 @@ class GameScene extends Phaser.Scene {
         const rightKey = right ? this.input.keyboard.addKey(right) : this.cursors.right;
         const upKey = up ? this.input.keyboard.addKey(up) : this.cursors.up;
         const downKey = down ? this.input.keyboard.addKey(down) : this.cursors.down;
+        const goblinSpeed = 100;
+        const goblinStartY = 590;
+        const goblinEndY = 990;
 
         if (leftKey.isDown) {
             this.player.body.setVelocityX(-this.speed);
@@ -202,6 +292,19 @@ class GameScene extends Phaser.Scene {
         } else if (this.inCollision && !Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.treeCollisionZone.getBounds())) {
             this.collisionText.setText('');
             this.inCollision = false;
+        }
+
+        // Check if goblin and its body are defined before accessing properties
+        if (this.goblin && this.goblin.body) {
+            if (this.goblin.y <= goblinStartY) {
+                this.goblin.body.setVelocityY(goblinSpeed);
+                this.goblin.anims.play("goblin-down-walk", true);
+            } else if (this.goblin.y >= goblinEndY) {
+                this.goblin.body.setVelocityY(-goblinSpeed);
+                this.goblin.anims.play("goblin-up-walk", true);
+            }
+
+            this.goblin.body.velocity.normalize().scale(goblinSpeed);
         }
     }
 

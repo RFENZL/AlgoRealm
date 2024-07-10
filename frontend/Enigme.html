@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/Enigme.css">
 </head>
-<body class="flex justify-center items-center h-screen m-0">
-<div class="parchment p-8 w-4/5 max-w-4xl text-center">
-    <div class="title text-3xl text-brown-700 mb-5">Exercice</div>
-    <div class="content text-lg text-gray-700 text-left">
+<body class="flex justify-center items-center h-screen bg-black text-white">
+<div class="terminal p-8 w-4/5 max-w-4xl">
+    <div class="title terminal-title text-3xl mb-5">Exercice</div>
+    <div class="flex justify-end">
+        <button id="hintButton" class="button terminal-button text-white border-none px-5 py-2 text-lg mt-5 rounded-md cursor-pointer transition duration-300" title="Cliquez pour voir le cours !" onclick="openDocumentation()">Cours</button>
+    </div>
+    <div class="content text-lg text-left">
         <p>Bienvenue, <br> développeur en herbe ! Pour ouvrir cette porte, tu devras compléter le morceau de code avec les fonctionnalités nécessaires.
             Ton objectif est de calculer la somme des nombres pairs de 1 à 10.</p>
         Instructions :
@@ -17,10 +21,10 @@
             - Si le nombre est pair, ajoutez-le à la somme.<br></p>
         Bonne chance, et que le code soit avec toi !
     </div>
-    <textarea id="terminal" placeholder="Écris ton code ici..." class="w-full h-24 mt-5 p-2 rounded-md border border-gray-400 resize-none bg-gray-100 text-gray-800"></textarea>
-    <button class="button bg-green-700 text-white border-none px-5 py-2 text-lg mt-5 rounded-md cursor-pointer transition duration-300 hover:bg-brown-600" onclick="testEnigme()">Exécuter</button>
-    <div class="console bg-gray-800 text-green-400 p-4 mt-5 rounded-md text-left" id="Console">Console:</div>
+    <textarea id="terminal" placeholder="Écris ton code ici..." class="w-full h-24 mt-5 p-2 rounded-md border border-gray-400 resize-none terminal-input"></textarea>
+    <button class="button bg-green-700 text-white border-none px-5 py-2 text-lg mt-5 rounded-md cursor-pointer transition duration-300 hover:bg-green-800" onclick="testEnigme()">Exécuter</button>
+    <div class="console terminal-output p-4 mt-5 rounded-md text-left" id="Console">Console:</div>
 </div>
-<script src="../frontend/js/enigme.js"></script>
+<script src="js/enigme.js"></script>
 </body>
 </html>

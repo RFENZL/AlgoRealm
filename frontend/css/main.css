@@ -97,15 +97,6 @@ button:active {
     box-sizing: border-box;
     overflow-y: auto;
     max-height: 100vh;
-    /*background-image: url('../assets_old/main_menu/bgs/main_bg_cave.jpg');*/
-    /*background-size: cover;*/
-    /*background-position: center;*/
-    /*display: flex;*/
-    /*flex-direction: column;*/
-    /*align-items: center;*/
-    /*justify-content: center;*/
-    /*height: 100vh;*/
-    /*color: white;*/
 }
 
 .sub_title {
